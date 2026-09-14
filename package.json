@@ -1,0 +1,11 @@
+{
+  "name": "ads-knowledge-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Advanced data structures course notes and interactive algorithm demonstrations",
+  "scripts": {
+    "test": "node --test tests/algorithms.test.mjs tests/lesson-one.test.mjs",
+    "start": "node server.mjs"
+  }
+}

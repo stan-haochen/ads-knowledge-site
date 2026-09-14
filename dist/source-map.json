@@ -1,0 +1,104 @@
+{
+  "title": "ADS Student Slides source inventory",
+  "totalFiles": 16,
+  "totalSlides": 285.0,
+  "notes": "Only filenames, page counts and hashes. No course administrative or student information.",
+  "files": [
+    {
+      "file": "ADS00.ppt",
+      "slides": 13,
+      "sha256": "9c3c5cf83a480420777d7beb32a6eb41d4f6e64098def445239e773240b1948b",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS01AVL_Stu.ppt",
+      "slides": 26,
+      "sha256": "8759f48e35b7b31a54ac2686163fd6461ee4168b8d9bc221c3d267d59138de41",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS02BTree_Stu.ppt",
+      "slides": 13,
+      "sha256": "8457275c691ded26a521f1a16ef950550a4320be4c86b0cb8922192d549dadb6",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS03InvFileInd_Stu.ppt",
+      "slides": 19,
+      "sha256": "da46a2703cded1105c660762e45958151b7814c084599d98c18bca29f8240ea0",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS04LeftistSkewH_Stu.ppt",
+      "slides": 13,
+      "sha256": "3fbfb65d06603d30938496b6e66edc41223206e546510299ec1baecb4bec0474",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS05BinomialQ_Stu.ppt",
+      "slides": 15,
+      "sha256": "f3b0deb8e9535ddd61fd312752ed2ae217ac9a12b76fb181dbb654d434028baa",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS06Backtracking_Stu.ppt",
+      "slides": 19,
+      "sha256": "5b9b4b7c97b5ec4cd2df84683f569e6f4e92a3f5b46026e4cbda6f5a5f9442ab",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS07Divide Conquer_Stu.ppt",
+      "slides": 17,
+      "sha256": "d1028c923d43369b0bb4dbb8e5573f2c6febfddebe5655bfc282db5ce096ed02",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS08DynamicProgramming_Stu.ppt",
+      "slides": 19,
+      "sha256": "1e30ce2434211748763144cdbd51c39d9c4d8b74af17fb083c3de3b0e6651eb3",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS09Greedy_Stu.ppt",
+      "slides": 17,
+      "sha256": "6d1cafe0e9fdede61c9288b1d4a1051e9830652801016e3551537065c0c5d4e4",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS10NP_TS.ppt",
+      "slides": 19,
+      "sha256": "396cfb5e6c148fbe5753ee8822264da98ab8f3e94b218b8d19522e3b0c63dec5",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS11Approximation_Stu.ppt",
+      "slides": 25,
+      "sha256": "c8c93b3b2d4859926a432fed07046c2d0346880c3b29b00d6eeb6599f61877da",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS12LocalSearch_TS.ppt",
+      "slides": 20,
+      "sha256": "992624f70f579ad2cb4ebb81008a514f54826c6b811b7f2c8b2b7646a6e82a6f",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS13RandomizedAlgorithms_Stu.ppt",
+      "slides": 16,
+      "sha256": "beb268524885a9f19928fda60ddefb700af28ee976cfb3ddca6924d6d20129dd",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS14Parallel_Stu.ppt",
+      "slides": 22,
+      "sha256": "83ba972700e9ae4cd7b00ab10afc3447ca0816d0fd0b2825a5b6ebfb71715be1",
+      "source": "Materials/Student Slides"
+    },
+    {
+      "file": "ADS15ExternalSorting_TS.ppt",
+      "slides": 12,
+      "sha256": "dafbee1bfb0c1af3f5b14a700446173c0a69af9dff5e6a19e87a89810d65f4e5",
+      "source": "Materials/Student Slides"
+    }
+  ]
+}
