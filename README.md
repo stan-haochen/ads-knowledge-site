@@ -106,8 +106,32 @@ npm test
 
 网站在支持 `document.modelContext` 的浏览器中注册三个可选 WebMCP 工具：读取实验状态、运行实验、跳转步骤。不支持该提案的浏览器照常使用页面。已验证注册适配器与可见状态更新；当前浏览器没有可用的原生 WebMCP 上下文，因此未声明原生端到端兼容性。
 
-## 部署状态
+## GitHub Pages 发布
 
-当前交付为已运行的本地网站和完整静态源码。Sites 发布工具在本次环境中不可调用，未创建注册记录、未发布，也没有公网访问地址。
+仓库：[stan-haochen/ads-knowledge-site](https://github.com/stan-haochen/ads-knowledge-site)。网站配置地址为 https://stan-haochen.github.io/ads-knowledge-site/ 。首次启用 Pages 并完成部署后即可公开访问。
 
-`dist` 可作为静态站点输出目录。后续连接 Sites 时使用 `.openai/hosting.json` 中的 `static.directory=dist`，完成正式注册后再写入平台返回的真实 project_id。不要手工伪造项目编号。
+`.github/workflows/pages.yml` 在每次推送 `main` 后先执行 `npm test`，通过后把 `dist` 发布到 GitHub Pages；测试失败不会更新网站。Pull Request 只运行测试。工作流也支持 Actions 页面手动运行。部署仅使用 GitHub 自动提供的短期 `GITHUB_TOKEN`，无需把个人 Token 放入仓库。
+
+首次设置：在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。随后查看 [发布流程](https://github.com/stan-haochen/ads-knowledge-site/actions/workflows/pages.yml) 的执行结果。网站资源和 ES module 使用相对路径，支持 `/ads-knowledge-site/` 项目路径与原有章节深链接。
+
+以后修改网页内容后，可以运行：
+
+```powershell
+.\Publish-ADS.ps1 -Message "补充课程内容"
+```
+
+该脚本验证分支与目标仓库、运行算法测试、检查远端是否有未合入变更，然后提交网站相关文件并推送。已有暂存内容时会要求先处理，避免顺带提交其他工作。它不会强制推送，也不代表云端部署一定完成；最终结果以 Actions 为准。
+
+也可以自行执行 `npm test`，审阅并提交本次变更，然后 `git push origin main`。本项目的 AGENTS.md 已记录用户要求：完成网页更新后测试、提交、推送，并检查部署结果。
+
+本地文件保存本身不会触发 GitHub Actions；完成提交并推送才会发布。这使未完成的课堂内容和中间修改不会直接成为线上版本。
+
+浏览器检查支持线上地址：
+
+```powershell
+$env:ADS_BASE_URL = 'https://stan-haochen.github.io/ads-knowledge-site/'
+node tests/browser-check.mjs
+node tests/lesson-browser.mjs
+```
+
+网页运行无需 Node 或本地服务器；Node 仅用于本地开发与 CI 测试。`Materials/Student Slides` 原始课件及本地检查截图不属于 Pages 发布产物。
