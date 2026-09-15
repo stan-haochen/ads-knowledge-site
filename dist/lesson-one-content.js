@@ -2,7 +2,7 @@ export function enrichLessonOne(c){
  c.title='AVL 与 Splay 树';
  c.desc='从旋转如何保持有序，到删除如何修复结构，再到势能如何支付昂贵访问。把操作、实现与证明放在同一条学习路径上。';
  c.demos=['avl','avl-delete','splay','splay-delete','splay-potential','stack'];
- c.learningPath=[['avl-delete','01 · AVL 删除','追踪后继、缓存高度与逐层修复'],['splay-delete','02 · Splay 删除','观察伸展、拆树和 Join 的完整过程'],['splay-potential','03 · 均摊证明','从单轮秩变化走到序列总成本']];
+ c.learningPath=[['avl-delete','01 · AVL 删除','追踪后继、缓存高度与逐层修复'],['splay-delete','02 · Splay 删除','观察伸展、拆树和 Join 的完整过程'],['splay-potential','03 · 均摊证明','从单轮秩变化走到序列总成本'],['splay-proof','04 · 完整证明专题','所有基本操作的证明、图示与势能账本']];
  c.concepts.push(
  ['删除时，键和节点是两回事','双孩子 AVL 删除可以复制后继的键与载荷，再在右子树实际移除后继对象。原目标节点的地址未变。后继没有左孩子，却可能有右孩子；需要把这个孩子接回后继原父亲。演示用稳定编号 n1、n2…区分对象与键。若外部保存节点引用，复制键会影响其语义，应明确采用复制载荷还是整体移植节点。'],
  ['AVL 删除的四个问题','每次回溯依次回答：新高度是多少？BF 是否越界？重孩子朝哪侧倾斜？修复后高度是否继续下降？尤其 BF(t)=+2 且 BF(t.left)=0 时必须单右旋；对称的 −2 / 0 情况单左旋。不能直接用插入的“新键落在哪边”判断删除分支。'],
