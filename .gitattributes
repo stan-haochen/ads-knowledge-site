@@ -1,0 +1,2 @@
+# Preserve the contributed Markdown's original bytes and line endings.
+dist/articles/amortized-analysis/index.md -text

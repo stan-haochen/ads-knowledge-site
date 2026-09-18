@@ -161,3 +161,20 @@ node tests/lesson-browser.mjs
 两个实验分别提供可修改权重的旋转前后图（含镜像、不相交集合与 SVG 导出）和 15 类操作的阶段回放（含整个森林、节点 size/rank、势能账本、原始字号）。页面支持下载完整证明 Markdown。懒标记增广提供适用条件与证明，未宣称已实现懒更新动画。动画的快照/绘图成本不纳入理想数据结构成本；账本的 c 只计旋转，正文说明如何换算真实时间。
 
 `npm test` 中新增的测试核对 4,800 组带权旋转、随机操作的排序集合参考结果、每个快照的 BST/size/森林不变量、结构变化的精确势能及望远镜等式。`node tests/splay-proof-browser.mjs` 验证 15 类操作、导出、回放、错误输入、路由清理和桌面/手机布局，也支持 `ADS_BASE_URL` 检查线上页面。
+
+## 第一课《摊还分析》阅读页
+
+入口 `#avl/amortized-analysis`，位于第一课的学习路径、各内容标签的阅读入口，以及“三种摊还分析”概念之后。全文保留投稿稿件的文字、公式及参考文献，覆盖聚合法、记账法、势能法、MultiPop、MTF 与 Splay。页面提供目录跳转、原始 Markdown 下载及相关实验链接。
+
+`dist/articles/amortized-analysis/index.md` 是未改动的原稿，`.gitattributes` 保留其原始换行。`splay.png` 是原图，`splay.svg` 是适配网站配色的重绘版，保留原图的节点标号和子树关系。手机端在图内横向查看，点击可单独打开矢量图。
+
+`article.html` 是提交到仓库的静态渲染结果。数学公式预渲染为 HTML 与 MathML，KaTeX 0.16.22 的 CSS、WOFF2 字体和 MIT 许可证放在 `dist/vendor/katex/`，无需 CDN 或浏览器中的数学渲染脚本。运行网站和 CI 测试仍无需安装依赖或执行构建。
+
+仅在维护此阅读页的渲染结果时，可按固定版本安装临时工具并重新生成：
+
+```powershell
+npm install --no-save --package-lock=false --ignore-scripts marked@15.0.12 katex@0.16.22
+node scripts/render-amortized-analysis.mjs
+```
+
+该脚本只更新网页片段、数学样式与字体，不修改 Markdown 原稿。标题层级、行间公式容器和图片路径属于网页格式适配。
