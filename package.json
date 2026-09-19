@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Advanced data structures course notes and interactive algorithm demonstrations",
   "scripts": {
-    "test": "node --test tests/algorithms.test.mjs tests/lesson-one.test.mjs tests/course-map.test.mjs tests/splay-proof.test.mjs",
+    "test": "node --test tests/algorithms.test.mjs tests/lesson-one.test.mjs tests/course-map.test.mjs tests/splay-proof.test.mjs tests/redblack-lab.test.mjs",
     "start": "node server.mjs"
   }
 }
