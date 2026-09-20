@@ -1,13 +1,15 @@
+import {caseAlignment} from './redblack-case-map.js';
 export const rbCases={
- I1:{name:'叔红 · 变色上推',test:'P 红，U 红',action:'P、U → 黑；G → 红；X ← G',why:'原来每条路径从 G 获得 1 个黑；现在改从 P 或 U 获得 1 个黑。局部黑数没变，红红冲突可能上移。',next:'重新看新 X 的父亲；到根则染黑。',memory:'叔红：父叔黑，祖父红，往上看。'},
- I2:{name:'叔黑折线 · 先拉直',test:'P 红，U 黑；X 与 P 朝向相反',action:'围绕 P 旋转，使 X 上升；不变色',why:'两个红节点交换上下位置，中间子树仍满足中序关系；黑数不变。此步只是把形状变成 I3。',next:'重新命名 X、P、G，立刻进入 I3。',memory:'折线先转父，拉直再收尾。'},
- I3:{name:'叔黑直线 · 换色旋祖',test:'P 红，U 黑；X 与 P 朝向相同',action:'P → 黑；G → 红；围绕 G 旋转，使 P 上升',why:'新的局部根 P 提供原来 G 的黑色。红节点不再直接相连，各外围子树路径黑数不变。',next:'本次修复结束，最后保证根黑。',memory:'直线父黑祖红，转祖就结束。'},
- D1:{name:'兄红 · 换黑兄',test:'X 欠黑且实际为黑；S 红',action:'S → 黑；P → 红；转 P，让 S 上升',why:'S 红必有黑孩子，P 必黑。旋转后原来的近侄成为新黑兄弟；所有有效黑路径数保持，X 的亏欠尚未消失。',next:'更新 S、N、F，进入 D2 / D3 / D4。',memory:'兄红先换黑兄，再查侄子。'},
- D2:{name:'双侄黑 · 合并上推',test:'S 黑，N 黑，F 黑（NIL 也算黑）',action:'S → 红；X ← P，亏欠上移',why:'X 侧原来少一个黑；把兄弟 S 染红，使两侧都少一个黑。局部已经等高，把整棵子树的亏欠交给 P。',next:'P 红：染黑吸收；P 黑：继续上推；到根：直接消债。',memory:'双侄黑，兄染红，亏欠交给父。'},
- D3:{name:'近红远黑 · 转出远红',test:'S 黑，N 红，F 黑',action:'N → 黑；S → 红；转 S，让 N 上升',why:'黑兄弟与红近侄交换形状，保留外围黑数；新兄弟为黑，新远侄为红。亏欠仍留在 X。',next:'更新 S、N、F，必定进入 D4。',memory:'近红只是过渡，转兄得到远红。'},
- D4:{name:'远侄红 · 借黑收尾',test:'S 黑，F 红；N 可红可黑',action:'S ← P 原色；P、F → 黑；转 P，让 S 上升',why:'X 一侧经过下降且染黑的 P，多出一个实际黑色；远侧 F 染黑补偿结构变化。各路径重新等黑高，去掉虚拟 +1。',next:'本次修复结束，不向上继续。',memory:'兄承父色，父远变黑，转父结束。'}
+ I1:{name:'叔红 · 变色上推',test:'X 红、P 红、G 黑；U 红（X 可为任一侧孩子）',action:'P、U → 黑；G → 红；X ← G',why:'原来每条路径从 G 获得 1 个黑；现在改从 P 或 U 获得 1 个黑。局部黑数没变，红红冲突可能上移。',next:'重新看新 X 的父亲；到根则染黑。',memory:'叔红：父叔黑，祖父红，往上看。'},
+ I2:{name:'叔黑折线 · 先拉直',test:'X 红、P 红、G 黑，U 黑；X 与 P 朝向相反',action:'围绕 P 旋转，使 X 上升；不变色',why:'两个红节点交换上下位置，中间子树仍满足中序关系；黑数不变。此步只是把形状变成 I3。',next:'重新命名 X、P、G，立刻进入 I3。',memory:'折线先转父，拉直再收尾。'},
+ I3:{name:'叔黑直线 · 换色旋祖',test:'X 红、P 红、G 黑，U 黑；X 与 P 朝向相同',action:'P → 黑；G → 红；围绕 G 旋转，使 P 上升',why:'新的局部根 P 提供原来 G 的黑色。红节点不再直接相连，各外围子树路径黑数不变。',next:'本次修复结束，最后保证根黑。',memory:'直线父黑祖红，转祖就结束。'},
+ D1:{name:'兄红 · 换黑兄',test:'X 非根且实际黑，携带 +1；S 红（故 P 黑）',action:'S → 黑；P → 红；转 P，让 S 上升',why:'S 红必有黑孩子，P 必黑。旋转后原来的近侄成为新黑兄弟；所有有效黑路径数保持，X 的亏欠尚未消失。',next:'更新 S、N、F，进入删除 Case 2.1 / 3 / 4；因 P 已红，不会直接接 Case 2.2。',memory:'兄红先换黑兄，再查侄子。'},
+ D2:{name:'双侄黑 · 合并上推',test:'X 非根且实际黑，携带 +1；S 黑，N 黑，F 黑（NIL 也算黑）',action:'S → 红；X ← P，亏欠上移',why:'X 侧原来少一个黑；把兄弟 S 染红，使两侧都少一个黑。局部已经等高，把整棵子树的亏欠交给 P。',next:'课件 Case 2.1：旧 P 红，染黑吸收；Case 2.2：旧 P 黑，到根消债，否则继续上推。',memory:'双侄黑，兄染红，亏欠交给父。'},
+ D3:{name:'近红远黑 · 转出远红',test:'X 非根且实际黑，携带 +1；S 黑，N 红，F 黑',action:'N → 黑；S → 红；转 S，让 N 上升',why:'黑兄弟与红近侄交换形状，保留外围黑数；新兄弟为黑，新远侄为红。亏欠仍留在 X。',next:'更新 S、N、F，必定进入 D4。',memory:'近红只是过渡，转兄得到远红。'},
+ D4:{name:'远侄红 · 借黑收尾',test:'X 非根且实际黑，携带 +1；S 黑，F 红；N 可红可黑',action:'S ← P 原色；P、F → 黑；转 P，让 S 上升',why:'X 一侧经过下降且染黑的 P，多出一个实际黑色；远侧 F 染黑补偿结构变化。各路径重新等黑高，去掉虚拟 +1。',next:'本次修复结束，不向上继续。',memory:'兄承父色，父远变黑，转父结束。'}
 };
 export const rbPresets=[
+ {id:'delete-21',name:'删除 Case 2.1 · 父红吸收',initial:'4 1 2 5 3 6',ops:'d:1',target:'D21',why:'先由 Case 1 换黑兄，得到红父与两个黑侄，再由课件 Case 2.1 合并、染黑吸收。'},
  {id:'insert-uncle',name:'插入 · 叔红上推',initial:'20 10 30',ops:'i:5',target:'I1',why:'先看变色如何把冲突移向祖父，且不改变路径黑数。'},
  {id:'insert-bend',name:'插入 · 折线→直线',initial:'30 10',ops:'i:20',target:'I2',why:'两个旋转分开播放：第一个只负责拉直，第二个配合变色收尾。'},
  {id:'insert-line',name:'插入 · 直线收尾',initial:'30 20',ops:'i:10',target:'I3',why:'与折线案例比较，只少一次拉直旋转。'},
@@ -26,13 +28,13 @@ export const rbInsertCode=[
  'X = BST_Insert(k, RED)  // 重复键直接返回',
  'while X.parent is RED:',
  '  P = X.parent; G = P.parent; U = sibling(P)',
- '  if U is RED:             // I1',
+ '  if U is RED:             // 插入 Case 1 (I1)',
  '    P.color = U.color = BLACK; G.color = RED',
  '    X = G; continue',
- '  if X,P,G form a bend:    // I2',
+ '  if X,P,G form a bend:    // 插入 Case 2 (I2)',
  '    rotate(P, raise=X); X = old_P',
  '    refresh P,G',
- '  P.color = BLACK; G.color = RED  // I3',
+ '  P.color = BLACK; G.color = RED  // 插入 Case 3 (I3)',
  '  rotate(G, raise=P); break',
  'root.color = BLACK'
 ];
@@ -43,19 +45,19 @@ export const rbDeleteCode=[
  'if removedColor is RED: return',
  'while X != root and X.color == BLACK:',
  '  P = X.parent; S = sibling(X); refresh near N, far F',
- '  if S is RED:                      // D1',
+ '  if S is RED:                      // 删除 Case 1 (D1)',
  '    S.color = BLACK; P.color = RED; rotate(P, raise=S)',
  '    refresh S,N,F',
- '  if N and F are BLACK:             // D2',
+ '  if N and F are BLACK:             // 删除 Case 2 (D2): 旧 P 红=2.1 / 黑=2.2',
  '    S.color = RED; X = P; continue',
- '  if F is BLACK:                    // D3 (N is RED)',
+ '  if F is BLACK:                    // 删除 Case 3 (D3) (N is RED)',
  '    N.color = BLACK; S.color = RED; rotate(S, raise=N)',
  '    refresh S,N,F',
- '  S.color = P.color; P.color = F.color = BLACK // D4',
+ '  S.color = P.color; P.color = F.color = BLACK // 删除 Case 4 (D4)',
  '  rotate(P, raise=S); return',
  'X.color = BLACK   // 红 X 吸收，或根处终止'
 ];
-export const rbReading=`
+export const rbReading=caseAlignment+`
 <h2>用两个不变量解释全部修复</h2>
 <p><b>插入只担心红红相连。</b>新节点先红，不会让所在路径多一个黑。若父黑就结束；父红再看叔。叔红时，父叔变黑和祖父变红相互抵消；叔黑时先把折线变直线，再把局部黑色交给新的根。</p>
 <p><b>删除只把一个黑色亏欠向外处理。</b>普通 BST 删除之后，真正摘除的节点至多有一个非 NIL 孩子。摘红无需修；摘黑且替代孩子红，染黑即可；摘黑且替代位置黑（常为 NIL），才需检查兄弟与侄子。橙色 <b>+1</b> 是“这条路径补记一黑”的分析标记，节点实际颜色仍只有红、黑两种。</p>

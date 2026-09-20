@@ -1,5 +1,6 @@
 // Symmetric, bottom-up red-black repair. Each external leaf has its own
 // black NIL object so a deficient empty position has an unambiguous parent.
+import {caseLabel} from './redblack-case-map.js';
 export const isRed=n=>!!n&&!n.nil&&n.color==='R';
 export function parseRBKeys(text){const a=text.trim()?text.trim().split(/[,，\s]+/).map(Number):[];if(a.length>24||a.some(v=>!Number.isSafeInteger(v)||Math.abs(v)>999)||new Set(a).size!==a.length)throw Error('初始树须为至多 24 个互异整数，范围 −999…999；允许空树。');return a}
 export function parseRBOps(text){const words=text.trim().split(/[,，\s]+/).filter(Boolean);if(!words.length||words.length>24)throw Error('请输入 1–24 个操作，例如 i:19 d:8 f:12。');return words.map(s=>{const m=/^(?:([idf]):)?(-?\d+)$/.exec(s);if(!m||Math.abs(+m[2])>999)throw Error('操作格式为 i:键、d:键、f:键；键在 −999…999。');return{type:m[1]||'i',key:+m[2]}})}
@@ -9,7 +10,7 @@ export class RBMachine{
  nil(parent){return{id:'e'+(++this.serial),nil:true,color:'B',parent}}
  node(key,parent){const n={id:'n'+(++this.serial),key,color:'R',parent,nil:false};n.left=this.nil(n);n.right=this.nil(n);return n}
  snapshot(n=this.root){return n.nil?{id:n.id,nil:true,color:'B'}:{id:n.id,key:n.key,color:n.color,nil:false,left:this.snapshot(n.left),right:this.snapshot(n.right)}}
- record(phase,title,text,roles={},caseId=null,side=null){if(!this.capture)return;let roleScope=phase==='action'?'本轮执行前的角色（追踪变色对象）':'当前角色';if(phase==='action'&&['I1','I2','D1','D2','D3'].includes(caseId)){const id=caseId==='I1'?roles.G:caseId==='I2'?roles.P:this.debt;const seek=n=>n.id===id?n:n.nil?null:seek(n.left)||seek(n.right);const next=seek(this.root);if(next){roles=caseId.startsWith('I')?this.iroles(next):this.droles(next);roleScope='下一轮角色（已重新命名）'}}const root=this.snapshot();this.frames.push({root,phase,title,text,roles:{...roles},roleScope,caseId,side,debt:this.debt,rotations:this.rotations,operation:this.operation,meta:this.meta?{...this.meta}:null,paths:snapshotPaths(root,this.debt)})}
+ record(phase,title,text,roles={},caseId=null,side=null){if(!this.capture)return;let courseCase=caseId;if(caseId==='D2'){if(phase==='decision'){const seek=n=>n.id===roles.P?n:n.nil?null:seek(n.left)||seek(n.right);this.d2Variant=seek(this.root).color==='R'?'D21':'D22'}courseCase=this.d2Variant}if(caseId){title=caseLabel(courseCase)+' · '+title.replace(/^[ID][1-4] · /,'');if(caseId==='D2')text+=(courseCase==='D21'?' 课件 Case 2.1：旧父红，新 X 染黑吸收后结束。':' 课件 Case 2.2：旧父黑；若到根则终止，否则重新分类。')}let roleScope=phase==='action'?'本轮执行前的角色（追踪变色对象）':'当前角色';if(phase==='action'&&['I1','I2','D1','D2','D3'].includes(caseId)){const id=caseId==='I1'?roles.G:caseId==='I2'?roles.P:this.debt;const seek=n=>n.id===id?n:n.nil?null:seek(n.left)||seek(n.right);const next=seek(this.root);if(next){roles=caseId.startsWith('I')?this.iroles(next):this.droles(next);roleScope='下一轮角色（已重新命名）'}}const root=this.snapshot();this.frames.push({root,phase,title,text,roles:{...roles},roleScope,caseId,courseCase,side,debt:this.debt,rotations:this.rotations,operation:this.operation,meta:this.meta?{...this.meta}:null,paths:snapshotPaths(root,this.debt)})}
  rotate(p,dir){const outward=dir==='left'?'right':'left',inward=dir==='left'?'left':'right',s=p[outward],g=p.parent;if(s.nil)throw Error('Cannot rotate through NIL');p[outward]=s[inward];p[outward].parent=p;s.parent=g;if(!g)this.root=s;else g[g.left===p?'left':'right']=s;s[inward]=p;p.parent=s;this.rotations++}
  find(key){let n=this.root;while(!n.nil&&key!==n.key)n=key<n.key?n.left:n.right;return n}
  iroles(x){const p=x.parent,g=p?.parent,u=g?(g.left===p?g.right:g.left):null;return Object.fromEntries([['X',x],['P',p],['G',g],['U',u]].filter(([,n])=>n).map(([r,n])=>[r,n.id]))}
@@ -36,7 +37,7 @@ export class RBMachine{
  fixDelete(x){while(x!==this.root&&!isRed(x)){
   let p=x.parent,left=x===p.left,s=left?p.right:p.left,side=left?'L':'R',roles=this.droles(x);
   if(s.nil)throw Error('A deficient nonroot black position must have a non-NIL sibling');
-  if(isRed(s)){this.decision('D1','D1 · 兄红：先换黑兄','S 染黑、P 染红；围绕 P 向 X 一侧旋，使原兄弟上升。亏欠留在 X，重新找兄弟。',roles,side);s.color='B';p.color='R';this.rotate(p,left?'left':'right');this.record('action','红兄变黑兄，亏欠仍在原位','D1 只改变判断环境，不负责消除亏欠。接着进入 D2、D3 或 D4。',roles,'D1',side);p=x.parent;s=left?p.right:p.left}
+  if(isRed(s)){this.decision('D1','D1 · 兄红：先换黑兄','S 染黑、P 染红；围绕 P 向 X 一侧旋，使原兄弟上升。亏欠留在 X，重新找兄弟。',roles,side);s.color='B';p.color='R';this.rotate(p,left?'left':'right');this.record('action','红兄变黑兄，亏欠仍在原位','D1 只改变判断环境，不负责消除亏欠。接着进入删除 Case 2.1、3 或 4；原 P 已红，不会直接进入 Case 2.2。',roles,'D1',side);p=x.parent;s=left?p.right:p.left}
   let near=left?s.left:s.right,far=left?s.right:s.left;roles=this.droles(x);
   if(!isRed(near)&&!isRed(far)){this.decision('D2','D2 · 兄黑、双侄黑：合并上推','S 染红，让兄弟侧也少一个黑；亏欠从 X 移到 P。P 红可吸收，P 黑继续向上。',roles,side);s.color='R';x=p;this.debt=x.id;this.record('action','X ← P：亏欠上移一层','下面两侧已经等黑高；仅父位置继续欠黑。注意下一轮 X、P、S 都要重新命名。',roles,'D2',side)}
   else{
